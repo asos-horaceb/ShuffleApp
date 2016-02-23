@@ -1,10 +1,10 @@
 package com.asos.getintotechnology.shuffleapp.ui;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,58 +18,44 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Takes a list of products and provides them to the list/ grid of items.
- * <p/>
- * Created by horace.bellgam on 22/02/16.
+ * Adapter for loading the list of products to the {@link RecyclerView}.
  */
-public class ProductAdapter extends ArrayAdapter<Product> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private final LayoutInflater inflater;
-
-    private final List<Product> products;
+    private List<Product> products;
+    private Context context;
+    private LayoutInflater layoutInflater;
 
     public ProductAdapter(Context context, List<Product> products) {
-        super(context, R.layout.list_item_product);
         this.products = products;
-        this.inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView != null) {
-            holder = (ViewHolder) convertView.getTag();
-        } else {
-            convertView = inflater.inflate(R.layout.list_item_product, parent, false);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        }
+    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        int resourceViewId = R.layout.list_item_product;
+        View view = layoutInflater.inflate(resourceViewId, parent, false);
+        ProductViewHolder productViewHolder = new ProductViewHolder(view);
+        return productViewHolder;
+    }
 
-        holder.productName.setText(getItem(position).getName());
-        holder.productPrice.setText(getItem(position).getPrice().getCurrent().getText());
-        Picasso.with(getContext())
-                .load(getItem(position).getImages().get(0).getUrl())
+    @Override
+    public void onBindViewHolder(ProductViewHolder holder, int position) {
+        Product product = products.get(position);
+        holder.productName.setText(product.getName());
+        holder.productPrice.setText(product.getPrice().getCurrent().getText());
+        Picasso.with(context)
+                .load(product.getImages().get(0).getUrl())
                 .into(holder.imageView);
-
-        return convertView;
     }
 
     @Override
-    public Product getItem(int position) {
-        return products.get(position);
-    }
-
-    @Override
-    public int getCount() {
+    public int getItemCount() {
         return products.size();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).getId();
-    }
-
-    static final class ViewHolder {
+    public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.product_name)
         TextView productName;
@@ -80,8 +66,10 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         @Bind(R.id.product_price)
         TextView productPrice;
 
-        public ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+
+        ProductViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

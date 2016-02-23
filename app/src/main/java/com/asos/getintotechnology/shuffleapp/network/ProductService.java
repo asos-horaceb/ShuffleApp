@@ -3,6 +3,7 @@ package com.asos.getintotechnology.shuffleapp.network;
 import com.asos.getintotechnology.shuffleapp.model.Product;
 import com.asos.getintotechnology.shuffleapp.model.SearchResults;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,8 @@ public class ProductService implements Callback<SearchResults> {
     @Override
     public void success(final SearchResults results, final Response response) {
         final List<Product> mainList = results.getProducts();
-
-        final int smallerRandom = getRandomNumber(0, 25);
-        final int largerRandom = getRandomNumber(26, 34);
-        final List<Product> smallerList = mainList.subList(smallerRandom, largerRandom);
+        Collections.shuffle(mainList);
+        final List<Product> smallerList = mainList.subList(0, 4);
 
         listener.displayProducts(smallerList);
     }
