@@ -23,7 +23,7 @@ import butterknife.OnClick;
 
 public class ProductActivity extends AppCompatActivity implements SensorEventListener, ProductService.OnResultListener {
 
-    private static final int COLUMN_NUMBER = 2;
+    private static final int COLUMN_NUMBER = 1;
 
     @Bind(R.id.product_grid)
     RecyclerView productGrid;
@@ -52,9 +52,7 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (hasDeviceShaken(event)) {
-            shuffleProducts();
-        }
+
     }
 
     @Override
@@ -115,11 +113,6 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public void displayError(String errorMessage) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @OnClick(R.id.shuffle_button)
-    void shuffleProducts() {
-        requestProducts();
     }
 
 }

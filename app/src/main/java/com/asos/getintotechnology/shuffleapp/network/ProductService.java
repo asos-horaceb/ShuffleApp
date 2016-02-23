@@ -60,15 +60,7 @@ public class ProductService implements Callback<SearchResults> {
     @Override
     public void success(final SearchResults results, final Response response) {
         final List<Product> mainList = results.getProducts();
-        Collections.shuffle(mainList);
-        final List<Product> smallerList = mainList.subList(0, 4);
-
-        listener.displayProducts(smallerList);
-    }
-
-    private int getRandomNumber(int min, int max) {
-        Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
+        listener.displayProducts(mainList);
     }
 
     @Override
