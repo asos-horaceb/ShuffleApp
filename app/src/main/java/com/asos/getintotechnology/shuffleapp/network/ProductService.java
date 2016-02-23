@@ -1,5 +1,10 @@
 package com.asos.getintotechnology.shuffleapp.network;
 
+import com.asos.getintotechnology.shuffleapp.model.Product;
+
+import java.util.List;
+
+import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -8,9 +13,9 @@ import retrofit.http.GET;
 /**
  * This will call the product api and bring back a list of products.
  */
-public class ProductService {
+public class ProductService implements Callback<List<Product>> {
 
-    private static final String API_URL = "http://";
+    private static final String API_URL = "http://searchapi.asos.com";
 
     private final RestAdapter adapter;
 
@@ -34,8 +39,8 @@ public class ProductService {
     }
 
     @Override
-    public void success(final Products products, final Response response) {
-        listener.displayProducts();
+    public void success(final List<Product> products, final Response response) {
+        listener.displayProducts(products);
     }
 
     @Override
@@ -45,8 +50,8 @@ public class ProductService {
 
     private interface ProductApi {
 
-        @GET("")
-        void getProducts(Callback<Products> callback);
+        @GET("/product/search/v1/categories/5897?currency=GBP&store=1&lang=en&channel=desktop-web&offset=0&limit=4")
+        void getProducts(Callback<List<Product>> callback);
 
     }
 }
