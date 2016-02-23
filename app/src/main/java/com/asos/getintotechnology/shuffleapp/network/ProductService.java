@@ -1,21 +1,32 @@
 package com.asos.getintotechnology.shuffleapp.network;
 
 import com.asos.getintotechnology.shuffleapp.model.Product;
+import com.asos.getintotechnology.shuffleapp.model.SearchResults;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.QueryMap;
 
 /**
  * This will call the product api and bring back a list of products.
  */
-public class ProductService implements Callback<List<Product>> {
+public class ProductService implements Callback<SearchResults> {
 
     private static final String API_URL = "http://searchapi.asos.com";
+    private static final String CURRENCY = "currency";
+    private static final String STORE = "store";
+    private static final String LANG = "lang";
+    private static final String CHANNEL = "channel";
+    private static final String OFFSET = "offset";
+    private static final String LIMIT = "limit";
 
     private final RestAdapter adapter;
 
@@ -35,12 +46,30 @@ public class ProductService implements Callback<List<Product>> {
 
     public void getProducts() {
         final ProductApi api = adapter.create(ProductApi.class);
-        api.getProducts(this);
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(CURRENCY, "GBP");
+        queryParams.put(STORE, "1");
+        queryParams.put(LANG, "en");
+        queryParams.put(CHANNEL, "mobile");
+        queryParams.put(OFFSET, "0");
+        queryParams.put(LIMIT, "35");
+        api.getWomensNike(queryParams, this);
     }
 
     @Override
-    public void success(final List<Product> products, final Response response) {
-        listener.displayProducts(products);
+    public void success(final SearchResults results, final Response response) {
+        final List<Product> mainList = results.getProducts();
+
+        final int smallerRandom = getRandomNumber(0, 25);
+        final int largerRandom = getRandomNumber(26, 34);
+        final List<Product> smallerList = mainList.subList(smallerRandom, largerRandom);
+
+        listener.displayProducts(smallerList);
+    }
+
+    private int getRandomNumber(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     @Override
@@ -50,8 +79,8 @@ public class ProductService implements Callback<List<Product>> {
 
     private interface ProductApi {
 
-        @GET("/product/search/v1/categories/5897?currency=GBP&store=1&lang=en&channel=desktop-web&offset=0&limit=4")
-        void getProducts(Callback<List<Product>> callback);
+        @GET("/product/search/v1/categories/5897")
+        void getWomensNike(@QueryMap Map<String, String> params, Callback<SearchResults> callback);
 
     }
 }

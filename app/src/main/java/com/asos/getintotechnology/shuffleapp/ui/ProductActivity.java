@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProductActivity extends AppCompatActivity implements ProductService.OnResultListener {
 
@@ -31,6 +32,11 @@ public class ProductActivity extends AppCompatActivity implements ProductService
     private void requestProducts() {
         ProductService service = new ProductService(this);
         service.getProducts();
+    }
+
+    @OnClick(R.id.shuffle_button)
+    void shuffleProducts() {
+        requestProducts();
     }
 
     @Override
