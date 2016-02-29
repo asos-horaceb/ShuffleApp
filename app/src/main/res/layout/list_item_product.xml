@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="1">
 
     <ImageView
         android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="196dp"
-        tools:background="@android:color/holo_green_dark" />
+        android:minHeight="150dp"
+        tools:background="@android:color/holo_green_dark"/>
 
     <TextView
         android:id="@+id/product_name"
@@ -18,15 +19,33 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/small_margin"
         android:textSize="@dimen/title_text_size"
-        tools:text="Product name" />
+        tools:text="Product name"/>
 
-    <TextView
-        android:id="@+id/product_price"
-        android:layout_width="match_parent"
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/small_margin"
-        android:textSize="@dimen/title_text_size"
-        android:textStyle="bold"
-        tools:text="£12.00" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_margin"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"
+            android:layout_marginRight="@dimen/large_margin"
+            tools:text="£12.00"/>
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+           android:layout_alignParentRight="true"
+            android:background="@drawable/ic_action_save"
+            android:layout_weight="0.14"
+            android:clickable="true"/>
+    </RelativeLayout>
+
 
 </LinearLayout>

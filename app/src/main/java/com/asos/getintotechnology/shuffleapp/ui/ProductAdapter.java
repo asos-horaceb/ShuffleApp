@@ -1,14 +1,18 @@
 package com.asos.getintotechnology.shuffleapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.asos.getintotechnology.shuffleapp.R;
+import com.asos.getintotechnology.shuffleapp.ShuffleApplication;
 import com.asos.getintotechnology.shuffleapp.model.Product;
 import com.squareup.picasso.Picasso;
 
@@ -42,12 +46,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
-        Product product = products.get(position);
+        final Product product = products.get(position);
         holder.productName.setText(product.getName());
         holder.productPrice.setText(product.getPrice().getCurrent().getText());
         Picasso.with(context)
-                .load(product.getImages().get(0).getUrl())
-                .into(holder.imageView);
+            .load(product.getImages().get(0).getUrl())
+            .into(holder.imageView);
+        final String url = product.getImages().get(0).getUrl();
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProductDetailsActivity.class);
+                intent.putExtra(ProductDetailsActivity.KEY_URL, url);
+                context.startActivity(intent);
+
+
+            }
+        });
+
+        holder.save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShuffleApplication.savedProducts.add(product);
+                Toast.makeText(context,"Item Saved Successfully "+    ShuffleApplication.savedProducts.size()+" saved products",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -65,6 +89,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         @Bind(R.id.product_price)
         TextView productPrice;
+
+        @Bind(R.id.imageButton)
+        ImageButton save;
 
 
         ProductViewHolder(View itemView) {

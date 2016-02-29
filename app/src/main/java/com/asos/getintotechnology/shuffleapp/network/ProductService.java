@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -45,7 +44,7 @@ public class ProductService implements Callback<SearchResults> {
         this.listener = listener;
     }
 
-    public void getProducts() {
+    public void getWomenProducts() {
         final ProductApi api = adapter.create(ProductApi.class);
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(CURRENCY, "GBP");
@@ -57,10 +56,24 @@ public class ProductService implements Callback<SearchResults> {
         api.getWomensNike(queryParams, this);
     }
 
+    public void getMenProducts() {
+        final ProductApi api = adapter.create(ProductApi.class);
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(CURRENCY, "GBP");
+        queryParams.put(STORE, "1");
+        queryParams.put(LANG, "en");
+        queryParams.put(CHANNEL, "mobile");
+        queryParams.put(OFFSET, "0");
+        queryParams.put(LIMIT, "35");
+        api.getMen(queryParams, this);
+    }
+
     @Override
     public void success(final SearchResults results, final Response response) {
         final List<Product> mainList = results.getProducts();
-        listener.displayProducts(mainList);
+        Collections.shuffle(mainList);
+        List<Product> smallerList = mainList.subList(0, 4);
+        listener.displayProducts(smallerList);
     }
 
     @Override
@@ -72,6 +85,9 @@ public class ProductService implements Callback<SearchResults> {
 
         @GET("/product/search/v1/categories/5897")
         void getWomensNike(@QueryMap Map<String, String> params, Callback<SearchResults> callback);
+
+        @GET("/product/search/v1/categories/1001-6993")
+        void getMen(@QueryMap Map<String, String> params, Callback<SearchResults> callback);
 
     }
 }

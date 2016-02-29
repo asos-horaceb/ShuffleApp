@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.asos.getintotechnology.shuffleapp.R;
@@ -23,8 +24,8 @@ import butterknife.OnClick;
 
 public class ProductActivity extends AppCompatActivity implements SensorEventListener, ProductService.OnResultListener {
 
-    private static final int COLUMN_NUMBER = 1;
-
+    private static final int COLUMN_NUMBER = 2;
+    private static final int ACCELERATION = 25;
     @Bind(R.id.product_grid)
     RecyclerView productGrid;
     private ProductAdapter productAdapter;
@@ -36,7 +37,10 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
     private float acceleration;
     private float accelerationCurrent;
     private float accelerationLast;
-
+    @Bind(R.id.radioButton2)
+    RadioButton men;
+    @Bind(R.id.radioButton3)
+    RadioButton women;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,9 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        if (hasDeviceShaken(event)) {
+            requestProducts();
+        }
     }
 
     @Override
@@ -82,7 +88,13 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
 
     private void requestProducts() {
         ProductService service = new ProductService(this);
-        service.getProducts();
+
+        if (men.isChecked()) {
+            service.getMenProducts();
+        } else {
+            service.getWomenProducts();
+        }
+
     }
 
 
@@ -95,7 +107,7 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
         float delta = accelerationCurrent - accelerationLast;
         acceleration = acceleration * 0.9f + delta; // perform low-cut filter
 
-        if (acceleration > 12) {
+        if (acceleration > ACCELERATION) {
             return true;
         } else {
             return false;
@@ -114,5 +126,11 @@ public class ProductActivity extends AppCompatActivity implements SensorEventLis
     public void displayError(String errorMessage) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
     }
+
+    @OnClick(R.id.button)
+    void shuffleProducts() {
+        requestProducts();
+    }
+
 
 }
